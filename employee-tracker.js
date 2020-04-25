@@ -32,33 +32,51 @@ function runMenu() {
                 "Exit"
             ]
         })
-    then(function (answer) {
-        switch (answer.action) {
-            case "View All Employees":
-                viewAllEmployees();
-                break;
+        .then(function (answer) {
+            switch (answer.action) {
+                case "View All Employees":
+                    viewAllEmployees();
+                    break;
 
-            case "View All Employees By Department":
-                viewAllDepartment();
-                break;
-            case "View All Employees By Manager":
-                viewAllEManagement();
-                break;
-            case "Add Employee":
-                addEmployee();
-                break;
-            case "Remove Employee":
-                removeEmployee();
-                break;
-            case "Update Employee Role":
-                updateEmployee();
-                break;
-            case "Update Employee Manager":
-                updateEManager();
-                break;
-            case "Exit":
-                connection.end();
-                break;
-        }
-    });
+                // case "View All Employees By Department":
+                //     viewAllDepartment();
+                //     break;
+                // case "View All Employees By Manager":
+                //     viewAllEManagement();
+                //     break;
+                // case "Add Employee":
+                //     addEmployee();
+                //     break;
+                // case "Remove Employee":
+                //     removeEmployee();
+                //     break;
+                // case "Update Employee Role":
+                //     updateEmployee();
+                //     break;
+                // case "Update Employee Manager":
+                //     updateEManager();
+                //     break;
+                case "Exit":
+                    connection.end();
+                    break;
+            }
+        });
+}
+function viewAllEmployees() {
+    inquirer
+        .prompt({
+            name: "employees",
+            type: "input",
+            message: "View All Employees"
+        })
+        .then(function (answer) {
+            var query = "Select an Employee";
+            connection.query(query, { Employees: answer.id }, function (err, res) {
+                if (err) throw err;
+                for (var i = 0; i < res.length; i++) {
+                    console.log(res[i].id + ". " + res[i].first_name + " " + res[i].last_name);
+                }
+                runMenu();
+            });
+        });
 }
