@@ -37,46 +37,159 @@ function runMenu() {
                 case "View All Employees":
                     viewAllEmployees();
                     break;
-
-                // case "View All Employees By Department":
-                //     viewAllDepartment();
-                //     break;
-                // case "View All Employees By Manager":
-                //     viewAllEManagement();
-                //     break;
-                // case "Add Employee":
-                //     addEmployee();
-                //     break;
-                // case "Remove Employee":
-                //     removeEmployee();
-                //     break;
-                // case "Update Employee Role":
-                //     updateEmployee();
-                //     break;
-                // case "Update Employee Manager":
-                //     updateEManager();
-                //     break;
+                case "View All Employees By Department":
+                    viewAllDepartment();
+                    break;
+                case "View All Employees By Manager":
+                    viewAllEManagement();
+                    break;
+                case "Add Employee":
+                    addEmployee();
+                    break;
+                case "Remove Employee":
+                    removeEmployee();
+                    break;
+                case "Update Employee Role":
+                    updateEmployee();
+                    break;
+                case "Update Employee Manager":
+                    updateEManager();
+                    break;
                 case "Exit":
                     connection.end();
                     break;
             }
         });
 }
+
 function viewAllEmployees() {
+
+    connection.query("SELECT id,first_name,last_name FROM employee", function (err, res) {
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++) {
+            console.log(res[i].id + ". " + res[i].first_name + " " + res[i].last_name);
+        }
+        runMenu();
+    });
+}
+
+function viewAllDepartment() {
+    connection.query("SELECT * FROM department", function (err, res) {
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++) {
+            console.log(res[i].name);
+        }
+        runMenu();
+    });
+}
+
+function viewAllEManagement() {
     inquirer
         .prompt({
-            name: "employees",
-            type: "input",
-            message: "View All Employees"
+            name: "allEManagement",
+            type: "list",
+            message: "Select a manager to view their employees."
+        });
+};
+
+function addEmployee() {
+    inquirer
+        .prompt({
+            name: "addEmployee",
+            type: "list",
+            message: "Select what you would like to do.",
+            choices: ["Add Employee", "EXIT"]
         })
         .then(function (answer) {
-            var query = "Select an Employee";
-            connection.query(query, { Employees: answer.id }, function (err, res) {
-                if (err) throw err;
-                for (var i = 0; i < res.length; i++) {
-                    console.log(res[i].id + ". " + res[i].first_name + " " + res[i].last_name);
-                }
-                runMenu();
-            });
+            // based on their answer, either call the bid or the post functions
+            if (answer.addEmployee === "Add Employee") {
+                postEmployee();
+            } else {
+                connection.end();
+            }
         });
+};
+
+function postEmployee() {
+    inquirer.prompt([
+        {
+            name: "first_name",
+            type: "input",
+            message: "First Name:"
+        },
+        {
+            name: "last_name",
+            type: "input",
+            message: "Last Name:"
+        },
+        {
+            name: "role_id",
+            type: "input",
+            message: "Role ID:",
+
+            validate: function (value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
+            }
+        },
+        {
+            name: "manager_id",
+            type: "input",
+            message: "Manager ID:",
+            validate: function (value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+    ])
+        .then(function (answer) {
+            connection.query(
+                "INSERT INTO employee SET ?",
+                {
+                    first_name: answer.first_name,
+                    last_name: answer.last_name,
+                    role_id: answer.role_id || 1,
+                    manager_id: answer.manager_id || 1
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("Your employee was created successfully!");
+
+                    runMenu();
+                }
+            );
+        });
+
 }
+
+function removeEmployee() {
+    inquirer
+        .prompt({
+            name: "",
+            type: "",
+            message: ""
+        });
+};
+
+function updateEmployee() {
+    inquirer
+        .prompt({
+            name: "",
+            type: "",
+            message: ""
+        });
+};
+
+function updateEManager() {
+    inquirer
+        .prompt({
+            name: "",
+            type: "",
+            message: ""
+        });
+};
