@@ -177,19 +177,60 @@ function removeEmployee() {
 };
 
 function updateEmployee() {
-    inquirer
-        .prompt({
-            name: "",
-            type: "",
-            message: ""
-        });
-};
+    connection.query("SELECT * FROM employee", function (err, results) {
+        if (err) throw err;
+
+        inquirer
+            .prompt([
+                {
+                    name: "empName",
+                    type: "rawlist",
+                    choices: function () {
+                        var choicesArray = [];
+                        for (var i = 0; i < results.length; i++) {
+                            choicesArray.push(results[i].first_name + " " + results[i].last_name);
+                        }
+                        return choicesArray;
+                    },
+                    message: "Who's role would you like to update?"
+                },
+                {
+                    name: "empRUpdate",
+                    type: "input",
+                    message: "What is their new role code?"
+                }
+
+            ]);
+    }
+    )
+}
+
 
 function updateEManager() {
-    inquirer
-        .prompt({
-            name: "",
-            type: "",
-            message: ""
-        });
-};
+    connection.query("SELECT * FROM employee", function (err, results) {
+        if (err) throw err;
+
+        inquirer
+            .prompt([
+                {
+                    name: "empMName",
+                    type: "rawlist",
+                    choices: function () {
+                        var choicesArray = [];
+                        for (var i = 0; i < results.length; i++) {
+                            choicesArray.push(results[i].first_name + " " + results[i].last_name);
+                        }
+                        return choicesArray;
+                    },
+                    message: "Who's manager would you like to update?"
+                },
+                {
+                    name: "empMUpdate",
+                    type: "input",
+                    message: "Who is their new manager?"
+                }
+
+            ]);
+    }
+    )
+}
