@@ -74,14 +74,36 @@ function viewAllEmployees() {
 }
 
 function viewAllDepartment() {
-    connection.query("SELECT * FROM department", function (err, res) {
-        if (err) throw err;
-        for (var i = 0; i < res.length; i++) {
-            console.log(res[i].name);
-        }
-        runMenu();
-    });
+    inquirer.prompt({
+        name: "viewAllDept",
+        type: "list",
+        choices: [
+            "JavaScript Programmer",
+            "SQL Programmer",
+            "Front End Programmer",
+            "Scrum Master",
+            "Manager"
+        ]
+    })
+        .then(function (answer) {
+            var query = "SELECT employee.role_id WHERE role.department_id are EQUAL";
+            connection.query(query, [answer.start, answer.end], function (err, res) {
+                for (var i = 0; i < res.length; i++) {
+                    console.log(res[i].first_name + " " + res[i].last_name);
+                }
+
+            });
+            runMenu();
+        })
+
+
 }
+
+// var query = "SELECT employee.role_id WHERE role.department_id are EQUAL";
+// if (answer.viewAllDept === "JavaScript Programmer") {
+//     connection.query(query, [answer.first_name + " " + answer.last_name], function (err, res) {
+//         console.log(res.length);
+
 
 function viewAllEManagement() {
     inquirer
@@ -105,7 +127,8 @@ function addEmployee() {
             if (answer.addEmployee === "Add Employee") {
                 postEmployee();
             } else {
-                connection.end();
+                runMenu();
+                // connection.end();
             }
         });
 };
