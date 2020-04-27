@@ -20,7 +20,15 @@ function runMenu() {
         .prompt({
             name: "action",
             type: "list",
-            message: "What would you like to do?",
+            message: `
+            _______  __   __  _____ __    ______  __   __ _______  _______
+            |   ___| | ⧹ / |  |  O || |   |  _  | ⧹ ⧹ / / |   ___| |   ___|
+            |  |___  | |V| |  |  __|| |   | | | |  ⧹ V /  |  |___  |  |___
+            |  ____| | | | |  |  |  | |   | | | |   | |   |  ____| |  ____|
+            |  |___  | | | |  |  |  | |__ | |_| |   | |   |  |___  |  |___
+            |______| |_| |_|  |__|  |____||_____|   |_|   |______| |______|
+            DATABASE
+            `,
             choices: [
                 "View All Employees",
                 "View All Employees By Department",
@@ -216,7 +224,9 @@ function runMenu() {
                         return removeArray;
                     },
                 });
+
         })
+        runMenu();
     };
 
     function updateEmployee() {
