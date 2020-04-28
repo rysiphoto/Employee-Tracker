@@ -79,10 +79,12 @@ function runMenu() {
 
 
     function viewAllEmployees() {
-        connection.query("SELECT id,first_name,last_name FROM employee", function (err, res) {
+        connection.query("SELECT id,first_name,last_name, role_id, manager_id FROM employee", function (err, res) {
             if (err) throw err;
+            console.log("ID --- NAME ------ ROLE -Manager")
             for (var i = 0; i < res.length; i++) {
-                console.log(res[i].id + ". " + res[i].first_name + " " + res[i].last_name);
+
+                console.log(res[i].id + ". " + res[i].first_name + " " + res[i].last_name + " || " + res[i].role_id + " || " + res[i].manager_id);
             }
             runMenu();
         });
@@ -100,15 +102,19 @@ function runMenu() {
                     var choicesDptArray = [];
                     for (var i = 0; i < results.length; i++) {
                         choicesDptArray.push(results[i].name);
+
                     }
                     return choicesDptArray;
+
                 }
             })
                 .then(function (answer) {
-                    var query = "SELECT employee.first_name, employee.last_name FROM employee, role, department WHERE employee.role_id = role.id AND role.department_id = department.id";
+                    var query = "SELECT role_id, first_name, last_name FROM employee INNER JOIN department WHERE department.id = role_id";
                     connection.query(query, [answer.start, answer.end], function (err, res) {
+
                         for (var i = 0; i < res.length; i++) {
-                            console.log(res[i].first_name + " " + res[i].last_name);
+                            console.log("");
+                            console.log(res[i].role_id + ". " + res[i].first_name + " " + res[i].last_name);
                         }
 
                     });
@@ -356,18 +362,31 @@ function runMenu() {
                             return choicesArray;
                         },
                         message: "Who's role would you like to update?"
-                    },
-                    {
-                        name: "empRUpdate",
-                        type: "input",
-                        message: "What is their new role code?"
                     }
 
+
                 ]);
-            runMenu();
-        }
-        )
+        }).then(function (answer) {
+            connection.query("SELECT employee.rile_id FROM ?", { name: answer.employee_id }, function (err, res) {
+                console.log("Role: " + res[1].id);
+            })
+        }).then(function (res) {
+            connection.query(
+                "INSERT INTO role",
+                {
+                    id: res.id
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("Your role was changed successfully!");
+
+                    runMenu();
+                }
+            );
+        });
+
     }
+
 
 
     function updateEManager() {
