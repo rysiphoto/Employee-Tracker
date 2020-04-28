@@ -34,6 +34,8 @@ function runMenu() {
                 "View All Employees By Department",
                 "View All Employees By Manager",
                 "Add Employee",
+                "Add Department",
+                "Add Employee Role",
                 "Remove Employee",
                 "Update Employee Role",
                 "Update Employee Manager",
@@ -54,6 +56,12 @@ function runMenu() {
                 case "Add Employee":
                     addEmployee();
                     break;
+                case "Add Department":
+                    addDepartment();
+                    break;
+                case "Add Employee Role":
+                    addRole();
+                    break;
                 case "Remove Employee":
                     removeEmployee();
                     break;
@@ -71,7 +79,6 @@ function runMenu() {
 
 
     function viewAllEmployees() {
-
         connection.query("SELECT id,first_name,last_name FROM employee", function (err, res) {
             if (err) throw err;
             for (var i = 0; i < res.length; i++) {
@@ -79,6 +86,7 @@ function runMenu() {
             }
             runMenu();
         });
+
     }
 
     function viewAllDepartment() {
@@ -208,6 +216,108 @@ function runMenu() {
 
     }
 
+    function addDepartment() {
+        inquirer
+            .prompt({
+                name: "addDepartment",
+                type: "list",
+                message: "Select what you would like to do.",
+                choices: ["Add Department", "EXIT"]
+            })
+            .then(function (answer) {
+                // based on their answer, either call the bid or the post functions
+                if (answer.addDepartment === "Add Department") {
+                    postDepartment();
+                } else {
+                    runMenu();
+                    // connection.end();
+                }
+            });
+    }
+
+    function postDepartment() {
+        inquirer.prompt([
+            {
+                name: "department_id",
+                type: "input",
+                message: "Name:"
+            }
+
+        ])
+            .then(function (answer) {
+                connection.query(
+                    "INSERT INTO department SET ?",
+                    {
+                        name: answer.department_id,
+                    },
+                    function (err) {
+                        if (err) throw err;
+                        console.log("Your department was created successfully!");
+
+                        runMenu();
+                    }
+                );
+            });
+
+    }
+
+    function addRole() {
+        inquirer
+            .prompt({
+                name: "addRole",
+                type: "list",
+                message: "Select what you would like to do.",
+                choices: ["Add Role", "EXIT"]
+            })
+            .then(function (answer) {
+                // based on their answer, either call the bid or the post functions
+                if (answer.addRole === "Add Role") {
+                    postRole();
+                } else {
+                    runMenu();
+                    // connection.end();
+                }
+            });
+    }
+
+    function postRole() {
+        inquirer.prompt([
+            {
+                name: "title",
+                type: "input",
+                message: "Role name:"
+            },
+            {
+                name: "salary",
+                type: "input",
+                message: "Salary: $"
+            },
+            {
+                name: "department_id",
+                type: "input",
+                message: "Department ID:"
+            }
+
+        ])
+            .then(function (answer) {
+                connection.query(
+                    "INSERT INTO role SET ?",
+                    {
+                        title: answer.title,
+                        salary: answer.salary,
+                        department_id: answer.department_id
+                    },
+                    function (err) {
+                        if (err) throw err;
+                        console.log("Your role was created successfully!");
+
+                        runMenu();
+                    }
+                );
+            });
+
+    }
+
     function removeEmployee() {
         connection.query("SELECT * FROM employee", function (err, results) {
             if (err) throw err;
@@ -237,7 +347,7 @@ function runMenu() {
                 .prompt([
                     {
                         name: "empName",
-                        type: "rawlist",
+                        type: "list",
                         choices: function () {
                             var choicesArray = [];
                             for (var i = 0; i < results.length; i++) {
