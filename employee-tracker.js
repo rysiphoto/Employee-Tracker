@@ -325,7 +325,7 @@ function runMenu() {
     }
 
     function removeEmployee() {
-        connection.query("SELECT * FROM employee", function (err, results) {
+        connection.query("DELETE * FROM employee WHERE id = ?", function (err, results) {
             if (err) throw err;
             inquirer
                 .prompt({
