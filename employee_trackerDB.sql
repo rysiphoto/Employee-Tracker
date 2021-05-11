@@ -40,8 +40,7 @@ references department
         (
             id int
             auto_increment primary key,
-name varchar
-            (30)
+name varchar(30)
 );
 
 

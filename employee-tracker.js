@@ -126,7 +126,7 @@ function runMenu() {
     }
 
     function viewAllEManagement() {
-        connection.query("SELECT employee.name FROM employee WHERE employee.manager_id", function (err, results) {
+        connection.query("SELECT employee.first_name FROM employee WHERE employee.manager_id", function (err, results) {
             if (err) throw err;
             inquirer
                 .prompt({
